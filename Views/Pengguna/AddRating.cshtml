@@ -1,0 +1,50 @@
+﻿@model ngoseng.Models.resep
+
+<div class="container mt-5">
+    <h1>@Model.judul</h1>
+    <p><strong>Deskripsi:</strong> @Model.deskripsi</p>
+    <p><strong>Bahan:</strong> @Model.bahan</p>
+
+    <!-- Bagian Rating -->
+    <div>
+        <h4>Berikan Rating:</h4>
+        <div id="rating-section">
+            @for (int i = 1; i <= 5; i++)
+            {
+                <i class="fa fa-star rating-star" data-value="@i" style="font-size: 24px; color: gray; cursor: pointer;"></i>}
+        </div>
+        <p>Rata-rata Rating: <span id="average-rating">@Model.rata_rata_rating</span></p>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.rating-star').forEach(star => {
+        star.addEventListener('click', function () {
+            const nilai = this.getAttribute('data-value');
+            const idResep = @Model.id_resep;
+
+            // Highlight selected stars
+            document.querySelectorAll('.rating-star').forEach(s => {
+                s.style.color = parseInt(s.getAttribute('data-value')) <= nilai ? 'gold' : 'gray';
+            });
+
+            // Kirim data rating ke server
+            fetch('/Pengguna/AddRating', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_resep: idResep, nilai_rating: nilai })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    document.getElementById("average-rating").textContent = data.averageRating.toFixed(2);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+

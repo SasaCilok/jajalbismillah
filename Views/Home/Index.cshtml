@@ -1,0 +1,104 @@
+﻿@model IEnumerable<ngoseng.Models.resep>
+
+@{ Layout = "~/Views/Shared/_Layout.cshtml";  // Menyebutkan layout yang digunakan
+    ViewBag.Title = "Beranda - Masak Yuk"; }
+
+
+
+@foreach (var item in Model.Take(1))
+{
+<div class="jumbotron jumbotron-fluid text-center text-white mb-5">
+    <div class="container d-flex justify-content-center position-relative" style="gap: 15px; height: 425px;">
+        <div style="background: url('/Uploads/Resep/Cake.jpg'); background-size: cover; width: 425px; height: 425px;"></div>
+        <div style="background: url('/Uploads/Resep/Cake.jpg'); background-size: cover; width: 425px; height: 425px;"></div>
+        <div style="background: url('/Uploads/Resep/Cake.jpg'); background-size: cover; width: 425px; height: 425px;"></div>
+
+        <div class="text-overlay position-absolute w-100 text-center" style="top: 50%; transform: translateY(-50%); z-index: 1;">
+            <h1 class="display-4" style="background-color: rgba(0, 0, 0, 0.5); padding: 10px; border-radius: 5px; display: inline-block; width: auto;">Semangat Masak</h1>
+            <br />
+            <p class="lead" style="background-color: rgba(0, 0, 0, 0.5); padding: 5px; display: inline-block; width: auto;">Ayo Memasak!</p>
+            <br />
+            <a href="@Url.Action("Login", "Account", new { id = item.id_resep })" class="btn btn-light btn-lg" style="margin-top: 15px;">Lihat Resep</a>
+        </div>
+    </div>
+</div>}
+
+<!-- Daftar Buku Paling Baru -->
+@if (Model != null && Model.Any())
+{
+<div id="resep-container" class="row">
+    @for (int i = 0; i < Model.Count(); i++)
+    {
+        var item = Model.ElementAt(i);
+        var averageRating = item.AverageRating ?? 0; // Menangani null dengan nilai default 0 jika tidak ada rata-rata rating
+        var fullStars = (int)Math.Floor(averageRating); // Bintang penuh
+        var emptyStars = 5 - fullStars; // Bintang kosong
+
+<div class="col-md-3 col-sm-6 mb-4 resep-item @(i >= 4 ? "d-none" : "")">
+    <div class="card">
+        <img src="@Url.Content(item.foto)" class="card-img-top" alt="@item.judul" style="height: 150px; object-fit: cover;">
+        <div class="card-body">
+            <h5 class="card-title text-truncate">@item.judul</h5>
+            <p class="card-text text-truncate">@item.deskripsi</p>
+
+            <!-- Menampilkan bintang berdasarkan rating -->
+            <div class="rating">
+                @for (var j = 0; j < fullStars; j++)
+                {
+<span>⭐</span> <!-- Bintang penuh -->}
+                @for (var k = 0; k < emptyStars; k++)
+                {
+<span>☆</span> <!-- Bintang kosong -->}
+            </div>
+
+            <!-- Form untuk memberi rating -->
+
+
+            <a href="@Url.Action("DetailResep", "Pengguna", new { id = item.id_resep })" class="btn btn-primary btn-block">
+                Lihat Resep
+            </a>
+        </div>
+    </div>
+</div>}
+</div>
+
+                <div class="text-center mt-3">
+                    <button id="load-more" class="btn btn-secondary">Lihat Selengkapnya</button>
+                </div> }
+            else
+            {
+<div class="alert alert-info text-center">
+    Anda belum memiliki resep. <a href="@Url.Action("AddResep", "Pengguna")" class="alert-link">Tambahkan resep sekarang!</a>
+</div>}
+
+<script>function loadMoreResep() {
+        // Menampilkan lebih banyak resep ketika tombol diklik
+        var hiddenReseps = document.querySelectorAll('.resep-item.d-none');
+        for (var i = 0; i < hiddenReseps.length; i++) {
+            hiddenReseps[i].classList.remove('d-none');
+        }
+
+        // Sembunyikan tombol jika semua resep sudah ditampilkan
+        if (document.querySelectorAll('.resep-item.d-none').length === 0) {
+            document.getElementById('load-more').style.display = 'none';
+        }
+    }</script>
+
+
+<script>document.getElementById("load-more").addEventListener("click", function () {
+        const hiddenItems = document.querySelectorAll(".resep-item.d-none");
+        hiddenItems.forEach((item, index) => {
+            if (index < 3) {
+                item.classList.remove("d-none");
+            }
+        });
+
+        if (document.querySelectorAll(".resep-item.d-none").length === 0) {
+            this.style.display = "none";
+        }
+    });</script>
+
+<!-- Footer -->
+<!--<footer class="bg-dark text-white text-center py-3 mt-4">
+    <p>&copy; 2024 Toko Buku | All Rights Reserved</p>
+</footer>-->

@@ -1,0 +1,39 @@
+﻿@model List<ngoseng.Models.UploadHistoryViewModel>
+
+<h2>Riwayat Upload Resep</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+<div class="alert alert-success">
+    @TempData["SuccessMessage"]
+</div>}
+
+@if (TempData["ErrorMessage"] != null)
+{
+<div class="alert alert-danger">
+    @TempData["ErrorMessage"]
+</div>}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tanggal Upload</th>
+            <th>Judul Resep</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+<tr>
+    <td>@item.TanggalUpload.Value.ToString("dd/MM/yyyy")</td>
+    <td>@item.JudulResep</td>
+    <td>
+        @Html.ActionLink("Edit", "EditResep", "Pengguna", new { id = item.IdResep }, new { @class = "btn btn-primary" })
+        <button type="button" class="btn btn-danger" onclick="confirmDelete(@item.IdResep)">
+            Hapus
+        </button>
+    </td>
+</tr>}
+    </tbody>
+</table>

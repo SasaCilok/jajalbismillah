@@ -1,0 +1,230 @@
+﻿
+@model List<ngoseng.Models.UploadHistoryViewModel>
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+</head>
+
+<h2>Riwayat Upload Resep</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+<div class="alert alert-success">
+    @TempData["SuccessMessage"]
+</div>}
+
+@if (TempData["ErrorMessage"] != null)
+{
+<div class="alert alert-danger">
+    @TempData["ErrorMessage"]
+</div>}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tanggal Upload</th>
+            <th>Judul Resep</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+<tr>
+    <td>@item.TanggalUpload.Value.ToString("dd/MM/yyyy")</td>
+    <td>@item.JudulResep</td>
+    <td>@item.Status</td>
+
+    <td>
+        @Html.ActionLink("Edit", "UpdateResep", new { id = item.IdResep }, new { @class = "btn btn-primary" })
+        <button type="button" class="btn btn-danger"
+                onclick="confirmDelete(@item.IdResep)">
+            Hapus
+        </button>
+    </td>
+</tr>
+}
+    </tbody>
+</table>
+
+<!-- Form untuk delete -->
+@using (Html.BeginForm("Delete", "Pengguna", FormMethod.Post, new { id = "deleteForm" }))
+{
+@Html.AntiForgeryToken()
+                <input type="hidden" id="idToDelete" name="id" />
+}
+
+<script>
+    function confirmDelete(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus resep ini?")) {
+            document.getElementById("idToDelete").value = id;
+            document.getElementById("deleteForm").submit();
+        }
+    }</script>
+
+<div class="icon-bar-container">
+    <div class="row justify-content-between text-center">
+        <!-- Menu Home -->
+        <div class="col">
+            <a href="@Url.Action("PenggunaDashboard", "Home")" class="btn btn-icon">
+                <i class="fas fa-home"></i>
+                <p>Home</p>
+            </a>
+        </div>
+
+        <!-- Menu Upload Resep -->
+        <div class="col">
+            <a href="@Url.Action("AddResep", "Pengguna")" class="btn btn-icon">
+                <i class="fas fa-plus"></i>
+                <p>Upload</p>
+            </a>
+        </div>
+
+        <!-- Menu Lihat Riwayat Upload -->
+        <div class="col">
+            <a href="@Url.Action("UploadHistory", "Pengguna")" class="btn btn-icon">
+                <i class="fas fa-history"></i>
+                <p>Riwayat</p>
+            </a>
+        </div>
+
+        <!-- Menu Lihat Katalog Resep -->
+        <div class="col">
+            <a href="@Url.Action("KatalogResep", "Home")" class="btn btn-icon">
+                <i class="fas fa-book"></i>
+                <p>Katalog</p>
+            </a>
+        </div>
+
+        <!-- Menu Lihat Koleksi Anda -->
+        <div class="col">
+            <a href="@Url.Action("ViewSimpanResep", "Pengguna", new { id = 23 })" class="btn btn-icon">
+                <i class="fas fa-save"></i>
+                <p>Koleksi</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    /* Ubah warna latar belakang pada seluruh body */
+    body {
+        background-color: white /* Kuning */
+    }
+
+    /* Elemen pembungkus luar */
+    .outer-layout {
+        position: relative;
+        z-index: 1000; /* Layer tertinggi */
+    }
+
+    /* Elemen konten dalam */
+    .inner-content {
+        position: relative;
+        z-index: 10; /* Layer lebih rendah */
+        background-color: rgba(255, 255, 255, 0.95); /* Transparansi opsional untuk memisahkan visual */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Opsional untuk menonjolkan layer */
+    }
+
+    /* Container untuk ikon */
+    .icon-bar-container {
+        position: fixed; /* Tetap di bagian bawah layar */
+        bottom: 0;
+        width: 100%; /* Mengisi lebar penuh */
+        padding: 10px 0; /* Padding vertikal */
+        z-index: 1000; /* Pastikan elemen ini berada di atas elemen lain */
+        background-color: #FFD700; /* Warna kuning */
+    }
+
+        /* Gaya untuk ikon dan teks dalam menu footer */
+        .icon-bar-container .btn-icon {
+            color: #000000; /* Warna teks hitam */
+        }
+
+            .icon-bar-container .btn-icon:hover {
+                color: #333333; /* Warna teks abu-abu saat hover */
+            }
+
+    /* Gaya untuk ikon dan teks */
+    .btn-icon {
+        color: #FFD700; /* Warna kuning untuk ikon dan teks */
+        font-size: 18px; /* Ukuran teks */
+        text-decoration: none; /* Hilangkan garis bawah */
+    }
+
+        .btn-icon i {
+            font-size: 24px; /* Ukuran ikon */
+            display: block;
+        }
+
+        .btn-icon p {
+            margin: 0; /* Hilangkan margin pada teks */
+            font-size: 12px; /* Ukuran teks lebih kecil */
+        }
+
+        /* Efek hover untuk ikon */
+        .btn-icon:hover {
+            color: #FFCC00; /* Warna kuning lebih terang */
+        }
+
+    /* Ubah warna latar belakang pada bagian header */
+    .container, .card, .btn, .alert-info {
+        background-color: white; /* Kuning */
+        color: #333333; /* Warna teks untuk kontras */
+    }
+
+    /* Menambahkan warna kuning pada button dengan class btn-outline-primary (tombol upload, dll.) */
+    .btn-outline-primary {
+        border-color: #E1BEE7;
+        color: white;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: transparent;
+            color: white;
+        }
+
+    .btn-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        font-size: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
+
+        .btn-circle i {
+            color: black;
+        }
+
+    .container-fluid {
+        z-index: 999;
+    }
+
+    .row.justify-content-between {
+        position: fixed;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        padding: 0 20px;
+    }
+
+    .col-2 {
+        padding: 5px;
+    }
+
+    .btn-circle:hover {
+        opacity: 0.8;
+    }
+
+    p {
+        font-size: 12px;
+        margin-top: 5px;
+    }
+</style>

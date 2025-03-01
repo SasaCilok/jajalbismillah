@@ -1,0 +1,20 @@
+﻿@model IEnumerable<ngoseng.Models.pengguna>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Logout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3>Anda yakin ingin logout?</h3>
+                <div class="mt-3">
+                    <a href="/Account/ConfirmLogout" class="btn btn-danger">Ya, Logout</a>
+                    <a href="/" class="btn btn-secondary">Batal</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,139 @@
+﻿
+
+@model IEnumerable<ngoseng.Models.resep>
+
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Dashboard Admin"; }
+
+<h1 class="text-center">Dashboard Admin</h1>
+<p class="lead text-center">Selamat datang, @Session["email"]!</p>
+
+<!-- Form pencarian -->
+<form method="get" action="@Url.Action("AdminDashboard", "Home")" class="mb-4">
+    <input type="text" name="searchTerm" class="form-control" placeholder="Cari berdasarkan judul resep..." value="@Request.QueryString["searchTerm"]" />
+    <button type="submit" class="btn btn-primary mt-2">Cari</button>
+</form>
+
+@if (Model != null && Model.Any())
+{
+<div id="resep-container" class="row">
+    @for (int i = 0; i < Model.Count(); i++)
+    {
+        var item = Model.ElementAt(i);
+        var averageRating = item.AverageRating ?? 0; // Menangani null dengan nilai default 0 jika tidak ada rata-rata rating
+        var fullStars = (int)Math.Floor(averageRating); // Bintang penuh
+        var emptyStars = 5 - fullStars; // Bintang kosong
+
+<div class="col-md-3 col-sm-6 mb-4 resep-item @(i >= 3 ? "d-none" : "")">
+    <div class="card">
+        <img src="@Url.Content(item.foto)" class="card-img-top" alt="@item.judul" style="height: 150px; object-fit: cover;">
+        <div class="card-body">
+            <h5 class="card-title text-truncate">@item.judul</h5>
+            <p class="card-text text-truncate">@item.deskripsi</p>
+
+            <!-- Menampilkan bintang berdasarkan rating -->
+            <div class="rating">
+                @for (var j = 0; j < fullStars; j++)
+                {
+<span>⭐</span> <!-- Bintang penuh -->}
+                @for (var k = 0; k < emptyStars; k++)
+                {
+<span>☆</span> <!-- Bintang kosong -->}
+            </div>
+
+
+
+
+            <a href="@Url.Action("DetailResep", "Admin", new { id = item.id_resep })" class="btn btn-primary btn-block">
+                Lihat Resep
+            </a>
+        </div>
+    </div>
+</div>}
+</div>
+
+                <div class="text-center mt-3">
+                    <button id="load-more" class="btn btn-secondary">Lihat Selengkapnya</button>
+                </div> }
+                            else
+                            { @* <div class="alert alert-info text-center">
+                        Anda belum memiliki resep. <a href="@Url.Action("AddResep", "Pengguna")" class="alert-link">Tambahkan resep sekarang!</a>
+                    </div>*@}
+
+<!-- Menampilkan informasi statistik -->
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h5>Total Pengguna</h5>
+                <h3>@ViewBag.TotalUser</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h5>Total Resep</h5>
+                <h3>@ViewBag.TotalResep</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Kelola Resep</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID Resep</th>
+            <th>Nama Resep</th>
+            <th>Status</th>
+            <th>Nama Pengguna</th> <!-- Menambahkan kolom untuk nama pengguna -->
+            @if (Session["UserRole"]?.ToString() == "admin")
+            {
+                <th>Ubah Status</th>
+}
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var resep in Model)
+            {
+                <tr>
+                    <td>@resep.id_resep</td>
+                    <td>@resep.judul</td>
+                    <td>@resep.status</td>
+                    <td>@resep.pengguna.email</td> <!-- Menampilkan email pengguna yang meng-upload resep -->
+                    @if (Session["UserRole"]?.ToString() == "admin")
+                    {
+                        <td>
+                            @using (Html.BeginForm("UpdateResepStatus", "Admin", FormMethod.Post))
+                            {
+                                @Html.Hidden("id", resep.id_resep)
+                                <select name="status" class="form-control">
+                                    <option value="draft" @(resep.status == "draft" ? "selected" : "")>Draft</option>
+                                    <option value="published" @(resep.status == "published" ? "selected" : "")>Published</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary">Validasi</button>}
+                            @* <form action="/Admin/ValidasiResep" method="post">
+                                    <input type="hidden" name="id_resep" value="@resep.id_resep" />
+                                    <select name="status" class="form-control">
+                                        <option value="draft" @(resep.status == "draft" ? "selected" : "")>Draft</option>
+                                        <option value="published" @(resep.status == "published" ? "selected" : "")>Published</option>
+
+                                    </select>
+                                    <button type="submit" class="btn btn-primary mt-2">Update</button>
+                                </form>*@
+                        </td>
+               }
+                </tr>
+ }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">Tidak ada data untuk ditampilkan.</td>
+            </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,269 @@
+﻿@model IEnumerable<ngoseng.Models.resep>
+
+@{
+    ViewBag.Title = "Dashboard User";
+}
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+</head>
+<h1 class="text-center">Dashboard Pelanggan</h1>
+<p class="lead text-center">Selamat datang, @Session["email"]!</p>
+
+
+
+<div class="container mt-4">
+    <h1 class="mb-4">Rekomendasi Resep</h1>
+    <!-- Form pencarian -->
+    <form method="get" action="@Url.Action("PenggunaDashboard", "Home")" class="mb-4">
+        <input type="text" name="searchTerm" class="form-control" placeholder="Cari berdasarkan judul resep..." value="@Request.QueryString["searchTerm"]" />
+        <button type="submit" class="btn btn-primary mt-2">Cari</button>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+<div id="resep-container" class="row">
+    @for (int i = 0; i < Model.Count(); i++)
+    {
+        var item = Model.ElementAt(i);
+        var averageRating = item.AverageRating ?? 0; // Menangani null dengan nilai default 0 jika tidak ada rata-rata rating
+        var fullStars = (int)Math.Floor(averageRating); // Bintang penuh
+        var emptyStars = 5 - fullStars; // Bintang kosong
+
+
+<div class="col-md-3 col-sm-6 mb-4 resep-item @(i >= 4 ? "d-none" : "")">
+    <div class="card">
+        <img src="@Url.Content(item.foto)" class="card-img-top" alt="@item.judul" style="height: 150px; object-fit: cover;">
+        <div class="card-body">
+            <h5 class="card-title text-truncate">@item.judul</h5>
+            <p class="card-text text-truncate">@item.deskripsi</p>
+            <!-- Menampilkan bintang berdasarkan rating -->
+            <div class="rating">
+                @for (var j = 0; j < fullStars; j++)
+                {
+<span>⭐</span> <!-- Bintang penuh -->}
+                @for (var k = 0; k < emptyStars; k++)
+                {
+<span>☆</span> <!-- Bintang kosong -->}
+            </div>
+            <a href="@Url.Action("DetailResep", "Pengguna", new { id = item.id_resep })" class="btn btn-primary btn-block">
+                Lihat Resep
+            </a>
+        </div>
+    </div>
+</div>}
+</div>
+
+                <div class="text-center mt-3">
+                    <button id="load-more" class="btn btn-secondary">Lihat Selengkapnya</button>
+                </div> }
+                            else
+                            {
+                <div class="alert alert-info text-center">
+                    Anda belum memiliki resep. <a href="@Url.Action("AddResep", "Pengguna")" class="alert-link">Tambahkan resep sekarang!</a>
+                </div>}
+</div>
+
+<script>
+    document.getElementById("load-more").addEventListener("click", function () {
+        const hiddenItems = document.querySelectorAll(".resep-item.d-none");
+        hiddenItems.forEach((item, index) => {
+            if (index < 3) {
+                item.classList.remove("d-none");
+            }
+        });
+
+        if (document.querySelectorAll(".resep-item.d-none").length === 0) {
+            this.style.display = "none";
+        }
+    });</script>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <a href="@Url.Action("AddResep", "Pengguna")" class="btn btn-outline-primary w-100 mb-3">Upload Resep</a>
+    </div>
+</div>
+
+<div class="mt-5">
+    <h3>Akses Cepat</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <a href="@Url.Action("UploadHistory", "Pengguna")" class="btn btn-outline-primary w-100 mb-3">Lihat Riwayat Upload</a>
+        </div>
+        <div class="col-md-4">
+            <a href="/user/KatalogResep" class="btn btn-outline-success w-100 mb-3">Lihat Katalog Resep</a>
+        </div>
+        <div class="col-md-4">
+            <a href="/user/SimpanResep" class="btn btn-outline-warning w-100 mb-3">Lihat Keranjang Belanja</a>
+        </div>
+    </div>
+</div>
+<div class="icon-bar-container">
+    <div class="row justify-content-between text-center">
+        <!-- Menu Home -->
+        <div class="col">
+            <a href="@Url.Action("PenggunaDashboard", "Home")" class="btn btn-icon">
+                <i class="fas fa-home"></i>
+                <p>Home</p>
+            </a>
+        </div>
+
+        <!-- Menu Upload Resep -->
+        <div class="col">
+            <a href="@Url.Action("AddResep", "Pengguna")" class="btn btn-icon">
+                <i class="fas fa-plus"></i>
+                <p>Upload</p>
+            </a>
+        </div>
+
+        <!-- Menu Lihat Riwayat Upload -->
+        <div class="col">
+            <a href="@Url.Action("UploadHistory", "Pengguna")" class="btn btn-icon">
+                <i class="fas fa-history"></i>
+                <p>Riwayat</p>
+            </a>
+        </div>
+
+        <!-- Menu Lihat Katalog Resep -->
+        <div class="col">
+            <a href="@Url.Action("KatalogResep", "Home")" class="btn btn-icon">
+                <i class="fas fa-book"></i>
+                <p>Katalog</p>
+            </a>
+        </div>
+
+        <!-- Menu Lihat Koleksi Anda -->
+        <div class="col">
+            <a href="@Url.Action("ViewSimpanResep", "Pengguna", new { id = 23 })" class="btn btn-icon">
+                <i class="fas fa-save"></i>
+                <p>Koleksi</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    /* Ubah warna latar belakang pada seluruh body */
+    body {
+        background-color: white /* Kuning */
+    }
+
+    /* Elemen pembungkus luar */
+    .outer-layout {
+        position: relative;
+        z-index: 1000; /* Layer tertinggi */
+    }
+
+    /* Elemen konten dalam */
+    .inner-content {
+        position: relative;
+        z-index: 10; /* Layer lebih rendah */
+        background-color: rgba(255, 255, 255, 0.95); /* Transparansi opsional untuk memisahkan visual */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Opsional untuk menonjolkan layer */
+    }
+
+    /* Container untuk ikon */
+    .icon-bar-container {
+        position: fixed; /* Tetap di bagian bawah layar */
+        bottom: 0;
+        width: 100%; /* Mengisi lebar penuh */
+        padding: 10px 0; /* Padding vertikal */
+        z-index: 1000; /* Pastikan elemen ini berada di atas elemen lain */
+        background-color: #FFD700; /* Warna kuning */
+    }
+
+        /* Gaya untuk ikon dan teks dalam menu footer */
+        .icon-bar-container .btn-icon {
+            color: #000000; /* Warna teks hitam */
+        }
+
+            .icon-bar-container .btn-icon:hover {
+                color: #333333; /* Warna teks abu-abu saat hover */
+            }
+
+    /* Gaya untuk ikon dan teks */
+    .btn-icon {
+        color: #FFD700; /* Warna kuning untuk ikon dan teks */
+        font-size: 18px; /* Ukuran teks */
+        text-decoration: none; /* Hilangkan garis bawah */
+    }
+
+        .btn-icon i {
+            font-size: 24px; /* Ukuran ikon */
+            display: block;
+        }
+
+        .btn-icon p {
+            margin: 0; /* Hilangkan margin pada teks */
+            font-size: 12px; /* Ukuran teks lebih kecil */
+        }
+
+        /* Efek hover untuk ikon */
+        .btn-icon:hover {
+            color: #FFCC00; /* Warna kuning lebih terang */
+        }
+
+    /* Ubah warna latar belakang pada bagian header */
+    .container, .card, .btn, .alert-info {
+        background-color: white; /* Kuning */
+        color: #333333; /* Warna teks untuk kontras */
+    }
+
+    /* Menambahkan warna kuning pada button dengan class btn-outline-primary (tombol upload, dll.) */
+    .btn-outline-primary {
+        border-color: #E1BEE7;
+        color: white;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: transparent;
+            color: white;
+        }
+
+    .btn-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        font-size: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
+
+        .btn-circle i {
+            color: black;
+        }
+
+    .container-fluid {
+        z-index: 999;
+    }
+
+    .row.justify-content-between {
+        position: fixed;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        padding: 0 20px;
+    }
+
+    .col-2 {
+        padding: 5px;
+    }
+
+    .btn-circle:hover {
+        opacity: 0.8;
+    }
+
+    p {
+        font-size: 12px;
+        margin-top: 5px;
+    }
+</style>
+
+
+
+

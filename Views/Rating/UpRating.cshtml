@@ -1,0 +1,127 @@
+﻿@model ngoseng.Models.resep
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "UpRating";
+}
+
+<h2>UpRating</h2>
+<div class="recipe-rating" data-recipe-id="@Model.id_resep">
+    <div class="rating-container">
+        <h4>Beri Rating</h4>
+        <div class="rating-stars">
+            @for (int i = 1; i <= 5; i++)
+            {
+                <span class="star" data-rating="@i">☆</span>
+            }
+        </div>
+        <div class="rating-info mt-2">
+            @* <span class="average-rating">Rating: @Model.rata_rata_rating.ToString("F1")</span>*@
+            <span class="average-rating">
+                Rating: @(Model.rata_rata_rating?.ToString("F1") ?? "0.0")
+            </span>
+
+            <span class="total-ratings">(@ViewBag.TotalRatings ratings)</span>
+        </div>
+        <button class="btn btn-primary mt-3 submit-rating">Submit Rating</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var $container = $('.recipe-rating');
+            var recipeId = $container.data('recipe-id');
+            var currentRating = 0;
+
+            // Load existing rating if any
+            $.get('/Rating/GetRecipeRating', { idResep: recipeId }, function (data) {
+                if (data && data.nilai_rating) {
+                    currentRating = data.nilai_rating;
+                    updateStars(currentRating);
+                }
+            });
+
+            function updateStars(rating) {
+                $('.star').each(function () {
+                    if ($(this).data('rating') <= rating) {
+                        $(this).text('★').addClass('selected');
+                    } else {
+                        $(this).text('☆').removeClass('selected');
+                    }
+                });
+            }
+
+            // Handle star hover
+            $('.star').hover(
+                function () {
+                    var rating = $(this).data('rating');
+                    updateStars(rating);
+                },
+                function () {
+                    updateStars(currentRating);
+                }
+            );
+
+            // Handle star click
+            $('.star').click(function () {
+                currentRating = $(this).data('rating');
+                updateStars(currentRating);
+            });
+
+            // Handle submit
+            $('.submit-rating').click(function () {
+                if (currentRating === 0) {
+                    alert('Silakan pilih rating terlebih dahulu');
+                    return;
+                }
+
+                $.post('/Rating/SubmitRating', {
+                    idResep: recipeId,
+                    rating: currentRating
+                }, function (response) {
+                    if (response.success) {
+                        $('.average-rating').text('Rating: ' + response.averageRating.toFixed(1));
+                        $('.total-ratings').text('(' + response.totalRatings + ' ratings)');
+                        alert('Rating berhasil disimpan!');
+                    } else {
+                        alert('Terjadi kesalahan: ' + response.message);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .rating-container {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .rating-stars {
+            font-size: 24px;
+            color: #ffd700;
+            cursor: pointer;
+        }
+
+        .star {
+            display: inline-block;
+            margin-right: 5px;
+            transition: transform 0.1s;
+        }
+
+            .star:hover {
+                transform: scale(1.2);
+            }
+
+        .rating-info {
+            color: #666;
+        }
+
+        .star.selected {
+            color: #ffd700;
+        }
+    </style>
+}
+

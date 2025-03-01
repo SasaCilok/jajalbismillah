@@ -1,0 +1,123 @@
+﻿@model List<dynamic>
+
+<style>
+    .star-rating {
+        display: inline-flex;
+        flex-direction: row-reverse;
+    }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            cursor: pointer;
+            font-size: 25px;
+            color: #ddd;
+            padding: 0 2px;
+        }
+
+        .star-rating:hover input:not(:checked) ~ label {
+            color: #ddd;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffd700;
+        }
+
+    .display-stars {
+        color: #ffd700;
+        font-size: 20px;
+    }
+</style>
+
+<h2>Daftar Resep</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Judul Resep</th>
+            <th>Deskripsi</th>
+            <th>Foto</th>
+            <th>Rating</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int no = 1;
+            foreach (var item in Model)
+            {
+                var resep = item.resep;
+                var averageRating = item.AverageRating ?? 0;
+<tr>
+    <td>@no</td>
+    <td>@resep.Judul</td>
+    <td>@resep.Deskripsi</td>
+    <td>
+        <img src="@resep.Foto" alt="@resep.Judul" style="width: 100px; height: auto;" />
+    </td>
+    <td>
+        <div class="display-stars">
+            @for (int i = 1; i <= 5; i++)
+            {
+                if (i <= Math.Round(averageRating))
+                {
+<span>★</span> }
+else
+{
+<span>☆</span>}
+}
+        </div>
+    </td>
+    <td>
+        <div class="star-rating">
+            @for (int i = 5; i >= 1; i--)
+            {
+<input type="radio" name="rating_@resep.id_resep" value="@i" id="star@(i)_@resep.id_resep" class="rating-input" data-resep-id="@resep.id_resep" />
+                        <label for="star@(i)_@resep.id_resep">★</label>}
+        </div>
+    </td>
+</tr>
+ no++;
+}
+}
+else
+{
+<tr>
+    <td colspan="6" class="text-center">Tidak ada resep tersedia</td>
+</tr>
+}
+    </tbody>
+</table>
+
+<script>
+$(document).ready(function() {
+    $('.rating-input').change(function() {
+        var rating = $(this).val();
+        var resepId = $(this).data('resep-id');
+
+        $.ajax({
+            url: '@Url.Action("GiveRating", "Pengguna")',
+            type: 'POST',
+            data: {
+                idResep: resepId,
+                nilai_rating: rating
+            },
+            success: function(response) {
+                if (response.success) {
+                    location.reload(); // Reload untuk memperbarui tampilan rating
+                } else {
+                    alert('Gagal memberikan rating');
+                }
+            },
+            error: function() {
+                alert('Terjadi kesalahan');
+            }
+        });
+    });
+});
+</script>

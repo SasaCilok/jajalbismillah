@@ -1,0 +1,23 @@
+﻿@model ngoseng.Models.resep_disimpan
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "HapusResepDisimpan";
+}
+
+<h1>Hapus Resep</h1>
+
+<p>Apakah Anda yakin ingin menghapus resep berikut dari koleksi Anda?</p>
+
+<div class="card" style="width: 18rem;">
+    <img src="@Url.Content(Model.resep.foto)" class="card-img-top" alt="@Model.resep.judul">
+    <div class="card-body">
+        <h5 class="card-title">@Model.resep.judul</h5>
+        <p class="card-text">@Model.resep.deskripsi</p>
+    </div>
+</div>
+
+<form action="@Url.Action("HapusResepDisimpan", "Pengguna", new { id = Model.id_resep })" method="post">
+    <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+    <a href="@Url.Action("ViewSimpanResep", "Pengguna")" class="btn btn-secondary">Batal</a>
+</form>
+

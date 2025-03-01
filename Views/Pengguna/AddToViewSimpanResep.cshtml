@@ -1,0 +1,25 @@
+﻿@model ngoseng.Models.resep_disimpan
+@{
+    ViewBag.Title = "AddToViewSimpanResep";
+}
+
+<div class="container text-center">
+    <h2>AddToViewSimpanResep</h2>
+    <p>Resep sedang diproses untuk disimpan ke koleksi Anda.</p>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success mt-4">
+            @TempData["Message"]
+        </div>}
+
+    @*@if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mt-4">
+            @TempData["ErrorMessage"]
+        </div>}*@
+
+    <a href="@Url.Action("ViewSimpanResep", "Pengguna")" class="btn btn-primary mt-4">Lihat Koleksi</a>
+    <a href="@Url.Action("PenggunaDashboard", "Pengguna")" class="btn btn-secondary mt-4">Kembali ke Daftar Resep</a>
+</div>
+

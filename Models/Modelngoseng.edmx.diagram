@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9ce707c988604c42af43ed0cde532503" Name="Diagram1">
+        <EntityTypeShape EntityType="cookingModel.histori_upload" Width="1.5" PointX="5.25" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="cookingModel.pengguna" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="cookingModel.rating_resep" Width="1.5" PointX="8.25" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="cookingModel.resep" Width="1.5" PointX="3" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="cookingModel.resep_disimpan" Width="1.5" PointX="5.25" PointY="6.125" IsExpanded="true" />
+        <AssociationConnector Association="cookingModel.FK__histori_u__id_pe__1273C1CD" ManuallyRouted="false" />
+        <AssociationConnector Association="cookingModel.FK__histori_u__id_re__1367E606" ManuallyRouted="false" />
+        <AssociationConnector Association="cookingModel.FK__rating_re__id_pe__25869641" ManuallyRouted="false" />
+        <AssociationConnector Association="cookingModel.FK__resep__id_penggu__09DE7BCC" ManuallyRouted="false" />
+        <AssociationConnector Association="cookingModel.FK__resep_dis__id_pe__1BFD2C07" ManuallyRouted="false" />
+        <AssociationConnector Association="cookingModel.FK__rating_re__id_re__267ABA7A" ManuallyRouted="false" />
+        <AssociationConnector Association="cookingModel.FK__resep_dis__id_re__1CF15040" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

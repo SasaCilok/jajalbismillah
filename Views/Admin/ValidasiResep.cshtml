@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ngoseng.Models.resep>
+
+<h2>Daftar Resep yang Belum Terverifikasi</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Judul</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.id_resep</td>
+                <td>@item.judul</td>
+                <td>@item.status</td>
+                <td>
+                    @if (item.status == "draft")
+                    {
+                        <a href="@Url.Action("ValidasiResep", new { idResep = item.id_resep })" class="btn btn-success">Validasi</a>
+                    }
+                    else
+                    {
+                        <span>Sudah Diverifikasi</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
