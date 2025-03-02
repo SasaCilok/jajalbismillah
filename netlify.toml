@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/*"
+  to = "Views/Home/Index.cshtml"
+  status = 200
